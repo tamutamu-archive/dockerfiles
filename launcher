@@ -18,10 +18,10 @@ usage () {
 case "$command" in
 
   build)
-    $docker_path build -t "tamutamu/base" base/
-    $docker_path build -t "tamutamu/java8" java8/
-    $docker_path build -t "tamutamu/tomcat8" tomcat8/
-
+    base/launcher build
+    java8/launcher build
+    tomcat8/launcher build
+ 
     exit 0
     ;;
 
