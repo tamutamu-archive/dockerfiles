@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -e
+ 
+command=$1
+opt=$2
+docker_path="exec "`which docker.io || which docker`
+
+name=base
+img_name='tamutamu/base'
+
+ssh_port=1234
+run_opts="-e TZ=Asia/Tokyo -p $ssh_port:22 --privileged -h `hostname`-base"
+
+cd "$(dirname "$0")"
+
+
+usage () {
+  echo
+  echo "Usage:"
+  echo ""
+}
+
+case "$command" in
+
+  build)
+    cp -f /home/ubuntu/.ssh/id_rsa.pub ./ || { echo "Not found /home/ubuntu/.ssh/id_rsa.pub !"; exit 1; }
+    $docker_path build -t $img_name .
+    exit 0
+    ;;
+
+  run)
+    $docker_path run --name $name -d $run_opts $img_name
+    exit 0
+    ;;
+
+  ssh)
+      ssh -p $ssh_port -o 'StrictHostKeyChecking no' -i /home/ubuntu/.ssh/id_rsa ubuntu@localhost
+      exit 0
+      ;;
+
+  rm)
+    echo "Do you want to remove running container ? [Y/n]"
+    read ANS
+  
+    if [ $ANS = 'Y' ]; then
+       $docker_path rm -f $name
+    fi
+
+    exit 0
+    ;;
+
+esac
+
+usage

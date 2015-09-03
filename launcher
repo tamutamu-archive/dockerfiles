@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -e
+ 
+command=$1
+opt=$2
+docker_path=`which docker.io || which docker`
+
+cd "$(dirname "$0")"
+
+
+usage () {
+  echo
+  echo "Usage:"
+  echo ""
+}
+
+case "$command" in
+
+  build)
+    $docker_path build -t "tamutamu/base" base/
+    $docker_path build -t "tamutamu/java8" java8/
+    $docker_path build -t "tamutamu/tomcat8" tomcat8/
+
+    exit 0
+    ;;
+
+esac
+
+usage
